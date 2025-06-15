@@ -26,7 +26,7 @@ app.secret_key = "hguwewjdjdjassyuwjhvagywehvcauucyjqhwqxvjzkgxcygqwehqwxbxsagcy
 # Configuration
 SUPABASE_URL = "https://wbpeabugoqfwziayrabr.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndicGVhYnVnb3Fmd3ppYXlyYWJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxMjg4MjUsImV4cCI6MjA2MjcwNDgyNX0.VBUvqPffjcmiMIxhHhoGHh0aaYwrfaO2iJrI-AHXiDs"
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "default_api_key")
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
