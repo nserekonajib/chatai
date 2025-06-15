@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple 3D Flight Simulator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            z-index: 100;
+        }
+        #controls {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            max-width: 200px;
+        }
+        #cockpit {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            z-index: 100;
+        }
+        .gauge {
+            display: inline-block;
+            margin: 5px;
+        }
+        button {
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div id="info">Flight Simulator - Use mouse to look around | W/S to pitch up/down | A/D to roll | Arrow keys to yaw</div>
+    <div id="controls">Controls: 
+        W/S - Pitch Down/Up<br>
+        A/D - Roll Left/Right<br>
+        Arrow Keys - Yaw<br>
+        Space - Take Off<br>
+        Shift - Land<br>
+        Mouse - Look Around
+    </div>
+    <div id="cockpit" class="gauge">
+        ALT: <span id="altitude">0</span>m | HDG: <span id="heading">0</span>° | SPD: <span id="speed">0</span> m/s
+        <button id="takeoff">Take Off</button>
+        <button id="landing">Land</button>
+        <button id="reset">Reset</button>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    
+    <script>
+        // Initialize variables
+        let scene, camera, renderer;
+        let controls;
+        let plane, planeGroup;
+        let terrain, skybox;
+        let velocity = new THREE.Vector3(0, 0, 0);
+        let acceleration = 0;
+        let altitude = 0;
+        let isFlying = false;
+        let rotationX = 0, rotationY = 0, rotationZ = 0;
+        let speed = 0;
+        let heading = 0;
+        let groundLevel = 0;
+        let takeoffSpeed = 50;
+        let flightPath = [];
+
+        // Initialize the simulation
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x88ccff);
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 3, 10);
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            document.body.appendChild(renderer.domElement);
+            
+            // Create controls for first-person mode
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableRotate = false;
+            controls.enableZoom = false;
+            controls.enablePan = false;
+            controls.noRotate = true;
+            controls.noPan = true;
+            
+            // Create a simple skybox
+            const skyGeometry = new THREE.SphereGeometry(500, 16, 16);
+            const skyMaterial = new THREE.MeshBasicMaterial({
+                color: 0x88ccff,
+                side: THREE.BackSide
+            });
+            skybox = new THREE.Mesh(skyGeometry, skyMaterial);
+            scene.add(skybox);
+            
+            // Create ground
+            const groundGeometry = new THREE.PlaneGeometry(1000, 1000, 100, 100);
+            const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x33aa44 });
+            terrain = new THREE.Mesh(groundGeometry, groundMaterial);
+            terrain.rotation.x = Math.PI / 2;
+            terrain.position.y = 0;
+            terrain.receiveShadow = true;
+            scene.add(terrain);
+            
+            // Create simple hills and valleys in the ground
+            const vertices = groundGeometry.attributes.position;
+            for (let i = 0; i < vertices.count; i++) {
+                const vertex = verticesXYZ(i, vertices);
+                const slope = heightFromCenter(vertex.x, vertex.z, 300, 5);
+                verticesXYZ(i, vertices, vertex.y + slope);
+            }
+            vertices.needsUpdate = true;
+            
+            // Create airplane
+            createAirplane();
+            
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0x666666);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(50, 200, 50);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+            
+            // Add mountains
+            createMountains();
+            
+            // Set up event listeners
+            window.addEventListener('resize', onWindowResize);
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+            document.getElementById('takeoff').addEventListener('click', takeOff);
+            document.getElementById('landing').addEventListener('click', land);
+            document.getElementById('reset').addEventListener('click', resetSimulation);
+            
+            // Start animation loop
+            animate();
+        }
+        
+        function createAirplane() {
+            // Create a simple airplane geometry using multiple shapes
+            const bodyGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 16);
+            const wingGeometry = new THREE.BoxGeometry(4, 0.1, 1);
+            const tailGeometry = new THREE.BoxGeometry(1, 0.2, 1);
+            const propellerGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.1, 16);
+            
+            // Materials
+            const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xff8833 });
+            const wingMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+            const tailMaterial = new THREE.MeshLambertMaterial({ color: 0xff8833 });
+            const propellerMaterial = new THREE.MeshLambertMaterial({ color: 0x111111 });
+            const propellerTipMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+            
+            // Airplane body
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.rotation.x = Math.PI/2;
+            body.position.z = -0.5;
+            body.castShadow = true;
+            
+            // Left wing
+            const leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
+            leftWing.position.set(-1.9, 0, 0);
+            
+            // Right wing (symmetrical)
+            const rightWing = new THREE.Mesh(wingGeometry, wingMaterial);
+            rightWing.position.set(1.9, 0, 0);
+            
+            // Tail
+            const tail = new THREE.Mesh(tailGeometry, tailMaterial);
+            tail.position.set(-2, 1, 1);
+            
+            // Propeller
+            const propellerBase = new THREE.Mesh(propellerGeometry, propellerMaterial);
+            propellerBase.position.set(1.9, -0.5, 0);
+            propellerBase.rotation.z = Math.PI/2;
+            
+            const propellerTip = new THREE.Mesh(propellerGeometry, propellerTipMaterial);
+            propellerTip.rotation.x = Math.PI/2;
+            propellerTip.scale.y = 0.5;
+            propellerTip.position.set(2, -0.5, 0);
+            propellerTip.rotation.z = Math.PI/2;
+            
+            // Create plane group
+            planeGroup = new THREE.Group();
+            planeGroup.add(leftWing);
+            planeGroup.add(rightWing);
+            planeGroup.add(tail);
+            planeGroup.add(propellerBase);
+            planeGroup.add(propellerTip);
+            planeGroup.add(body);
+            
+            // Position the plane (on the ground)
+            planeGroup.position.y = 0;
+            planeGroup.rotation.y = 0; // Looking right (negative x direction)
+            scene.add(planeGroup);
+        }
+        
+        function createMountains() {
+            for (let i = 0; i < 5; i++) {
+                const height = 20 + Math.random() * 60;
+                const mountainGeometry = new THREE.ConeGeometry(25 + Math.random() * 25, height, 4);
+                const mountainMaterial = new THREE.MeshLambertMaterial({ 
+                    color: new THREE.Color(0.6 + Math.random() * 0.2, 0.6 + Math.random() * 0.2, 0.4 + Math.random() * 0.2) 
+                });
+                const mountain = new THREE.Mesh(mountainGeometry, mountainMaterial);
+                mountain.position.set(-350 + Math.random() * 100, height/2, 30 - Math.random() * 100);
+                mountain.rotation.y = Math.random() * Math.PI;
+                mountain.rotation.x = Math.PI/2;
+                mountain.castShadow = true;
+                mountain.receiveShadow = true;
+                scene.add(mountain);
+            }
+        }
+        
+        function heightFromCenter(x, z, width, amplitude) {
+            const center = width * 0.5;
+            const distanceFromCenter = Math.min(
+                Math.abs(x - center),
+                Math.abs(z - center)
+            );
+            return -amplitude * Math.exp(-Math.pow(distanceFromCenter / center, 3));
+        }
+        
+        function verticesXYZ(i, vertices) {
+            const x = vertices.getX(i);
+            const y = vertices.getY(i);
+            const z = vertices.getZ(i);
+            const a = i * 3;
+            vertices.setXYZ(i, x, y, z);
+            return {x, y, z};
+        }
+        
+        function takeOff() {
+            if (!isFlying) {
+                isFlying = true;
+                updateFlightMode();
+                velocity.z = 0; // Reset velocity
+            }
+        }
+        
+        function land() {
+            if (isFlying) {
+                isFlying = false;
+                updateFlightMode();
+                groundLevel = 0; // Reset ground level
+            }
+        }
+        
+        function updateFlightMode() {
+            // When taking off, set ground level to max
+            if (!isFlying) {
+                groundLevel = 10;
+            }
+        }
+        
+        function onMouseMove(event) {
+            // Update camera look direction
+            if (controls) {
+                const mouseX = (event.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+                const mouseY = (event.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+                controls.update(mouseX * 0.5, mouseY * 0.5);
+            }
+        }
+        
+        function onKeyDown(event) {
+            // Controls for pitch, yaw, roll, and takeoff/landing
+            switch(event.key) {
+                case 'w': // Pitch down (nose down)
+                    altitude -= 1;
+                    break;
+                case 's': // Pitch up (nose up)
+                    altitude += 1;
+                    break;
+                case 'a': // Roll left
+                    rotationZ -= 0.05;
+                    break;
+                case 'd': // Roll right
+                    rotationZ += 0.05;
+                    break;
+                case 'ArrowLeft': // Yaw left
+                    planeGroup.rotation.y += 0.05;
+                    break;
+                case 'ArrowRight': // Yaw right
+                    planeGroup.rotation.y -= 0.05;
+                    break;
+                case ' ': // Space bar - take off
+                    takeOff();
+                    break;
+                case 'Shift': // Shift - land
+                    land();
+                    break;
+            }
+            
+            // Update plane rotation
+            planeGroup.rotation.x = altitude * 0.001 + rotationX * 0.001;
+            planeGroup.rotation.z = rotationZ;
+            
+            // Update display
+            document.getElementById('altitude').textContent = Math.floor(altitude * 0.5);
+            document.getElementById('heading').textContent = Math.floor(planeGroup.rotation.y * 180 / Math.PI);
+            document.getElementById('speed').textContent = Math.floor(Math.abs(velocity.x));
+            
+            // Update plane position based on velocity and rotation
+            velocity.x += Math.sin(planeGroup.rotation.y) * acceleration;
+            velocity.z += Math.cos(planeGroup.rotation.y) * acceleration;
+            planeGroup.position.x += velocity.x;
+            planeGroup.position.z += velocity.z;
+            
+            // Handle ground collision
+            const planeBottom = planeGroup.position.y + 1 + altitude; // Simple plane height
+            if (planeBottom < groundLevel) {
+                groundLevel = planeBottom;
+            }
+            
+            // During flight, apply basic physics
+            if (isFlying) {
+                // Auto acceleration during flight
+                acceleration += 0.01;
+            }
+            
+            // Limit altitude and rotation
+            altitude = Math.max(altitude, -10);
+            altitude = Math.min(altitude, 20);
+            rotationZ = Math.max(-0.5, Math.min(0.5, rotationZ));
+        }
+        
+        function onKeyUp(event) {
+            switch(event.key) {
+                case 'w':
+                case 's':
+                    altitude = 0;
+                    break;
+                case 'a':
+                case 'd':
+                    rotationZ = 0;
+                    break;
+            }
+            
+            // Reset velocity when keys are released
+            velocity.set(0, 0, 0);
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function resetSimulation() {
+            // Reset all variables
+            scene.remove(planeGroup);
+            altitude = 0;
+            rotationX = 0;
+            rotationY = 0;
+            rotationZ = 0;
+            acceleration = 0;
+            isFlying = false;
+            speed = 0;
+            heading = 0;
+            
+            // Recreate airplane
+            createAirplane();
+            groundLevel = 0;
+            
+            // Update display
+            document.getElementById('altitude').textContent = "0";
+            document.getElementById('heading').textContent = "0";
+            document.getElementById('speed').textContent = "0";
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Apply plane rotation
+            planeGroup.rotation.x = altitude * 0.001 + rotationX * 0.001;
+            planeGroup.rotation.z = rotationZ;
+            
+            // Auto level when no roll input
+            if (Math.abs(rotationZ) < 0.01) rotationZ *= 0.95;
+            
+            // Add slight banking based on altitude changes
+            if (isFlying) {
+                rotationZ += altitude * 0.0001;
+            }
+            
+            // Update velocity
+            velocity.x += Math.sin(planeGroup.rotation.y) * acceleration;
+            velocity.z += Math.cos(planeGroup.rotation.y) * acceleration;
+            
+            // Apply drag
+            velocity.x *= 0.99;
+            velocity.z *= 0.99;
+            
+            // Update plane position
+            planeGroup.position.x += velocity.x;
+            planeGroup.position.z += velocity.z;
+            
+            // Handle ground collision
+            const planeBottom = planeGroup.position.y + 1 + altitude; // Simple plane height
+            if (planeBottom <= 0 && !isFlying) {
+                // More realistic landing physics
+                velocity.x *= 0.5;
+                velocity.z *= 0.5;
+                groundLevel = planeBottom;
+            } else if (planeBottom > 0 && altitude > 0) {
+                // More realistic takeoff physics
+                isFlying = true;
+                updateFlightMode();
+            }
+            
+            // Record flight path
+            flightPath.push({x: planeGroup.position.x, y: planeGroup.position.y + 1 + altitude, z: planeGroup.position.z});
+            if (flightPath.length > 100) {
+                flightPath.shift();
+            }
+            
+            // Render the scene
+            renderer.render(scene, camera);
+        }
+        
+        // Start the simulation
+        init();
+        
+        // Set up mouse event listener for looking around
+        document.addEventListener('mousemove', onMouseMove);
+    </script>
+</body>
+</html>

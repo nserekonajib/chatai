@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Najib & Nabirah AI Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" rel="stylesheet">
+    <style>
+      
+   
+            body {
+                background-color: #fff9fb !important;
+                font-family: 'Poppins', sans-serif;
+                color: #5a3f5d !important; /* Default text color - romantic purple tone with better contrast */
+            }
+        
+            /* Backgrounds and borders */
+            .sidebar,
+            .bg-gray-800,
+            .border-gray-700,
+            .bg-gray-900 {
+                background-color: #fff9fb !important;
+                border-color: #a283b3 !important;
+            }
+        
+            /* Text Colors (Improved Contrast) */
+            .text-gray-100,
+            .text-gray-400,
+            .text-gray-700,
+            .text-romantic-purple {
+                color: #5a3f5d !important; /* Adjusted romantic purple with better contrast */
+            }
+        
+            .text-white {
+                color: #ffffff !important;
+            }
+        
+            .text-blue-400,
+            .text-deep-red {
+                color: #d82e42 !important;
+            }
+        
+            .text-love-pink {
+                color: #c15778 !important; /* deeper tone of love pink for visibility */
+            }
+        
+            /* Background Colors */
+            .bg-blue-600,
+            .hover\:bg-blue-700:hover {
+                background-color: #d82e42 !important;
+            }
+        
+            .bg-blue-700 {
+                background-color: #a283b3 !important;
+            }
+        
+            .bg-gray-200,
+            .bg-gray-300,
+            .bg-gray-600,
+            .bg-gray-700 {
+                background-color: #ffb8c6 !important;
+            }
+        
+            .bg-white,
+            .bg-gray-900 {
+                background-color: #fff9fb !important;
+            }
+        
+            .bg-gradient-to-r {
+                background: linear-gradient(90deg, #ffb8c6 0%, #a283b3 100%) !important;
+            }
+        
+            .bg-gradient-to-r.from-purple-500.to-blue-500,
+            .bg-gradient-to-r.from-purple-500 {
+                background: linear-gradient(90deg, #a283b3 0%, #d82e42 100%) !important;
+            }
+        
+            .bg-gradient-to-br {
+                background: linear-gradient(135deg, #ffb8c6 0%, #d82e42 100%) !important;
+            }
+        
+            .bg-romantic-purple {
+                background-color: #a283b3 !important;
+            }
+        
+            .bg-love-pink {
+                background-color: #ffb8c6 !important;
+            }
+        
+            .bg-deep-red {
+                background-color: #d82e42 !important;
+            }
+        
+            /* Fonts */
+            .font-parisienne {
+                font-family: 'Parisienne', cursive !important;
+            }
+        
+            .font-poppins {
+                font-family: 'Poppins', sans-serif !important;
+            }
+        
+            /* Cards and Buttons */
+            .rounded-md,
+            .rounded-lg {
+                border-radius: 1rem !important;
+            }
+        
+            .card-glow {
+                box-shadow: 0 10px 30px rgba(211, 44, 78, 0.2) !important;
+            }
+        
+            /* Code blocks */
+            .prose-invert pre {
+                background: #fff0f6 !important;
+            }
+        
+            /* Copy Button */
+            .copy-button {
+                background: rgba(255, 184, 198, 0.2) !important;
+                color: #d82e42 !important;
+            }
+        
+            .copy-button:hover {
+                background: #ffb8c6 !important;
+            }
+        
+            .copy-button.copied {
+                background: #a283b3 !important;
+                color: #fff9fb !important;
+            }
+        
+            /* Responsive Text Utilities */
+            h1, h2, h3, h4, h5, h6 {
+                color: #5a3f5d !important;
+                word-break: break-word;
+            }
+        
+            p {
+                color: #5a3f5d !important;
+                line-height: 1.6;
+            }
+        
+            /* Responsive padding/margin (minimal) */
+            .responsive-container {
+                padding: 1rem;
+                margin: 0 auto;
+                max-width: 1200px;
+            }
+        
+            @media (max-width: 768px) {
+                .responsive-container {
+                    padding: 0.75rem;
+                }
+        
+                .text-sm {
+                    font-size: 0.9rem;
+                }
+        
+                .text-xs {
+                    font-size: 0.8rem;
+                }
+        
+                .card-glow {
+                    box-shadow: 0 6px 20px rgba(211, 44, 78, 0.15) !important;
+                }
+            }
+
+            /* Add these to your existing CSS for mobile optimization */
+@media (max-width: 768px) {
+    /* Sidebar toggle becomes larger on mobile */
+    #sidebarToggle {
+        transform: scale(1.3);
+        width: 45px;
+        height: 45px;
+        font-size: 28px !important;
+    }
+    
+    /* Chat history becomes scrollable on mobile */
+    #chatHistory {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    /* Adjust avatar size */
+    #userAvatar {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.5rem !important;
+    }
+    
+    /* Make buttons larger for touch */
+    .px-3, .sm\:px-6 {
+        padding-left: 1rem !important;
+    }
+    
+    .py-2, .sm\:py-4 {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+    
+    /* Adjust padding/margin for mobile */
+    .p-4, .p-6 {
+        padding: 1rem !important;
+    }
+    
+    /* Allow chat items to wrap on mobile */
+    .chat-item {
+        flex-direction: column !important;
+    }
+    
+    /* Make logo smaller on mobile */
+    h1 {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Remove hidden class from elements that need to be visible */
+    .hidden {
+        display: none !important;
+    }
+    
+    /* Input area adjustments for better touch targets */
+    #messageInput {
+        padding: 0.75rem !important;
+    }
+    
+    #sendButton {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.25rem !important;
+    }
+    
+    /* Adjust spacing for mobile */
+    .space-y-4 {
+        gap-y: 1rem !important;
+    }
+    
+    .flex-1 {
+        min-height: 300px !important;
+    }
+    
+    /* Chat history item padding */
+    .chat-item {
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    /* Remove reflected voice call for mobile */
+    .reflected-voice-call {
+        display: none !important;
+    }
+}
+   
+        
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 flex h-screen overflow-hidden">
+    <!-- Mobile sidebar toggle -->
+    <button id="sidebarToggle" class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 shadow-md">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar bg-gray-800 w-64 flex-shrink-0 flex flex-col border-r border-gray-700">
+        <div class="p-4 border-b border-gray-700">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-brain text-blue-400 text-2xl"></i>
+                <h1 class="text-xl font-bold">Najib & Nabirah AI</h1>
+            </div>
+            <button id="newChatBtn" class="mt-4 w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center gap-2">
+                <i class="fas fa-plus"></i>
+                <span class="hidden sm:inline">New Chat</span>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto">
+            <div class="p-2">
+                <h2 class="px-2 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Chat History</h2>
+                <div id="chatHistory" class="space-y-1">
+                    <!-- Chat history will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-700">
+            <div class="flex items-center space-x-3">
+                <div id="userAvatar" class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
+                    {{ user.email[0].upper() }}
+                </div>
+                <div>
+                    <h3 id="userEmail" class="text-sm font-medium">{{ user.email }}</h3>
+                    <p class="text-xs text-gray-400">Premium User</p>
+                </div>
+            </div>
+            <button id="logoutBtn" class="mt-4 w-full px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md flex items-center justify-center gap-2">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="hidden sm:inline">Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Chat header -->
+        <div class="border-b border-gray-700 px-4 sm:px-6 py-3 sm:py-4 bg-gray-800 flex items-center justify-between">
+            <h2 id="chatTitle" class="text-base sm:text-lg font-medium truncate">New Chat</h2>
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <button id="themeToggle"
+                    class="px-2 sm:px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center space-x-2 text-sm focus:outline-none transition-colors duration-200"
+                    title="Toggle light/dark mode"
+                    aria-label="Toggle light/dark mode"
+                    type="button"
+                >
+                    <i id="themeIcon" class="fas fa-moon text-gray-800 dark:text-gray-100"></i>
+                    <span id="themeLabel" class="hidden sm:inline">Dark</span>
+                </button>
+                <div id="pdfIndicator" class="hidden items-center space-x-2 px-2 sm:px-3 py-1 bg-gray-700 rounded-full">
+                    <i class="fas fa-file-pdf text-red-400"></i>
+                    <span id="pdfFilename" class="text-sm"></span>
+                    <button id="removePdf" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <label for="pdfUpload" class="cursor-pointer px-2 sm:px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-full flex items-center space-x-2">
+                    <i class="fas fa-paperclip"></i>
+                    <span class="text-sm hidden sm:inline">Upload PDF</span>
+                </label>
+                <input type="file" id="pdfUpload" class="hidden" accept=".pdf">
+            </div>
+        </div>
+        
+        <!-- Messages container -->
+        <div id="messagesContainer" class="flex-1 overflow-y-auto p-2 sm:p-6 space-y-4 sm:space-y-6">
+            <!-- Welcome message -->
+            <div class="message flex space-x-4">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="max-w-3xl bg-gray-700 rounded-lg p-4 shadow-sm">
+                    <div class="prose prose-invert max-w-none">
+                        <h3>Welcome to Najib & Nabirah AI Chat! 🚀</h3>
+                        <p>I'm your advanced AI assistant, ready to help you with:</p>
+                        <ul>
+                            <li>💻 Code generation and debugging</li>
+                            <li>📄 PDF document analysis</li>
+                            <li>🤔 Complex problem solving</li>
+                            <li>✍️ Content creation and editing</li>
+                            <li>🧠 Research and explanations</li>
+                        </ul>
+                        <p>Upload a PDF document or start asking questions. I'm here to help!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing indicator -->
+        <div id="typingIndicator" class="hidden px-4 sm:px-6 py-2 sm:py-3 bg-gray-800 border-t border-gray-700">
+            <div class="flex items-center space-x-3 text-gray-400">
+                <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="typing-dots flex space-x-1">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                </div>
+                <span class="hidden sm:inline">Najib & Nabirah Replying</span>
+            </div>
+        </div>
+
+        <!-- Input container -->
+        <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-800 border-t border-gray-700 flex items-center gap-2">
+            <div class="relative flex-1">
+                <textarea 
+                    id="messageInput" 
+                    class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm sm:text-base"
+                    placeholder="Type your message here... (Shift + Enter for new line)"
+                    rows="1"
+                ></textarea>
+                <button id="sendButton" class="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 w-9 sm:w-10 h-9 sm:h-10 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <button id="stopButton" class="px-4 py-2 bg-deep-red text-white rounded-lg shadow-md font-semibold hidden" style="min-width:70px;">
+                <i class="fas fa-stop"></i>
+                <span class="hidden sm:inline ml-1">Stop</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // Global variables
+        let currentChatId = null;
+        let isTyping = false;
+        let eventSource = null;
+
+        // Helper function to escape HTML
+        function escapeHTML(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                })[m];
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            loadChatHistory();
+        });
+
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Sidebar toggle
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('sidebar-open');
+                document.getElementById('sidebarBackdrop').style.display = sidebar.classList.contains('sidebar-open') ? 'block' : 'none';
+            });
+
+            // Sidebar backdrop click
+            document.getElementById('sidebarBackdrop').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.remove('sidebar-open');
+                this.style.display = 'none';
+            });
+
+            // New chat button
+            document.getElementById('newChatBtn').addEventListener('click', startNewChat);
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+
+            // Message input
+            const messageInput = document.getElementById('messageInput');
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            });
+
+            // Send message on Enter (but not Shift+Enter)
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Send button
+            document.getElementById('sendButton').addEventListener('click', sendMessage);
+
+            // PDF upload
+            document.getElementById('pdfUpload').addEventListener('change', handlePdfUpload);
+
+            // Remove PDF
+            document.getElementById('removePdf').addEventListener('click', function() {
+                document.getElementById('pdfIndicator').classList.add('hidden');
+                // Here you would also remove the PDF from the session
+                fetch('/remove-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        addSystemMessage('PDF removed successfully');
+                    }
+                });
+            });
+
+            // Stop button
+            document.getElementById('stopButton').addEventListener('click', function() {
+                if (eventSource) {
+                    eventSource.close();
+                    eventSource = null;
+                }
+                showTypingIndicator(false);
+                addSystemMessage('⏹️ Response stopped by user.');
+            });
+        }
+
+        // Load chat history from server
+        async function loadChatHistory() {
+            try {
+                const response = await fetch('/chats');
+                const data = await response.json();
+                
+                if (data.success && data.chats) {
+                    const chatHistory = document.getElementById('chatHistory');
+                    chatHistory.innerHTML = '';
+                    
+                    data.chats.forEach(chat => {
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-item px-3 py-2 rounded-md cursor-pointer';
+                        chatItem.dataset.chatId = chat.id;
+                        
+                        chatItem.innerHTML = `
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm truncate">${chat.title}</span>
+                                <span class="text-xs text-gray-400">${formatDate(chat.created_at)}</span>
+                            </div>
+                        `;
+
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'ml-2 text-red-400 hover:text-red-600 text-xs';
+                        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                        deleteBtn.title = 'Delete chat';
+                        deleteBtn.onclick = async (e) => {
+                            e.stopPropagation();
+                            if (confirm('Delete this chat and all its messages?')) {
+                                await fetch('/delete-chat', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ chat_id: chat.id })
+                                });
+                                loadChatHistory();
+                                // Optionally clear main area if this chat was open
+                                if (currentChatId === chat.id) {
+                                    document.getElementById('messagesContainer').innerHTML = '';
+                                    document.getElementById('chatTitle').textContent = 'New Chat';
+                                }
+                            }
+                        };
+                        chatItem.querySelector('.flex').appendChild(deleteBtn);
+                        
+                        chatItem.addEventListener('click', function() {
+                            loadChat(chat.id);
+                        });
+                        
+                        chatHistory.appendChild(chatItem);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            }
+        }
+
+        // Load a specific chat
+        async function loadChat(chatId) {
+            try {
+                // Show loading state
+                document.getElementById('messagesContainer').innerHTML = `
+                    <div class="flex justify-center items-center h-full">
+                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    </div>
+                `;
+                
+                const response = await fetch(`/chat/history?chat_id=${chatId}`);
+                const data = await response.json();
+                
+                if (data.success && data.messages) {
+                    currentChatId = chatId;
+                    document.getElementById('chatTitle').textContent = 
+                        data.messages.find(m => m.role === 'user')?.content.substring(0, 30) + '...' || 'Chat';
+                    
+                    const messagesContainer = document.getElementById('messagesContainer');
+                    messagesContainer.innerHTML = '';
+                    
+                    data.messages.forEach(message => {
+                        addMessageToUI(message.content, message.role);
+                    });
+                    
+                    // Highlight active chat in sidebar
+                    document.querySelectorAll('.chat-item').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.dataset.chatId === chatId) {
+                            item.classList.add('active');
+                        }
+                    });
+                    
+                    // Check for PDF context
+                    checkPdfContext(chatId);
+                    
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            } catch (error) {
+                console.error('Error loading chat:', error);
+                addSystemMessage('Error loading chat. Please try again.', 'error');
+            }
+        }
+
+        // Check if this chat has PDF context
+        async function checkPdfContext(chatId) {
+            try {
+                const response = await fetch(`/chat/pdf-context?chat_id=${chatId}`);
+                const data = await response.json();
+                
+                if (data.success && data.pdf) {
+                    const pdfIndicator = document.getElementById('pdfIndicator');
+                    const pdfFilename = document.getElementById('pdfFilename');
+                    
+                    pdfIndicator.classList.remove('hidden');
+                    pdfFilename.textContent = data.pdf.filename;
+                } else {
+                    document.getElementById('pdfIndicator').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error checking PDF context:', error);
+            }
+        }
+
+        // Start a new chat
+        async function startNewChat() {
+            try {
+                const response = await fetch('/new-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentChatId = data.chat_id;
+                    document.getElementById('messagesContainer').innerHTML = `
+                        <div class="message flex space-x-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="max-w-3xl bg-gray-700 rounded-lg p-4 shadow-sm">
+                                <div class="prose prose-invert max-w-none">
+                                    <h3>Welcome to Najib & Nabirah AI Chat! 🚀</h3>
+                                    <p>I'm your advanced AI assistant, ready to help you with:</p>
+                                    <ul>
+                                        <li>💻 Code generation and debugging</li>
+                                        <li>📄 PDF document analysis</li>
+                                        <li>🤔 Complex problem solving</li>
+                                        <li>✍️ Content creation and editing</li>
+                                        <li>🧠 Research and explanations</li>
+                                    </ul>
+                                    <p>Upload a PDF document or start asking questions. I'm here to help!</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('chatTitle').textContent = 'New Chat';
+                    document.getElementById('messageInput').value = '';
+                    
+                    // Clear active chat in sidebar
+                    document.querySelectorAll('.chat-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Hide PDF indicator
+                    document.getElementById('pdfIndicator').classList.add('hidden');
+                    
+                    // Refresh chat history
+                    loadChatHistory();
+                }
+            } catch (error) {
+                console.error('Error starting new chat:', error);
+                addSystemMessage('Error starting new chat', 'error');
+            }
+        }
+
+        // Send a message to the AI
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message || isTyping) return;
+
+            // Add user message to UI
+            addMessageToUI(message, 'user');
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            // Show typing indicator
+            showTypingIndicator(true);
+            
+            try {
+                // Create a new EventSource connection for streaming
+                if (eventSource) {
+                    eventSource.close();
+                }
+                
+                const url = new URL('/chat', window.location.origin);
+                url.searchParams.append('message', message);
+                if (currentChatId) {
+                    url.searchParams.append('chat_id', currentChatId);
+                }
+                
+                eventSource = new EventSource(url);
+                
+                let assistantMessage = '';
+                let messageElement = null;
+                
+                eventSource.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.error) {
+                            addSystemMessage(data.error, 'error');
+                            showTypingIndicator(false);
+                            eventSource.close();
+                            return;
+                        }
+                        
+                        if (data.content) {
+                            assistantMessage += data.content;
+                            
+                            if (!messageElement) {
+                                messageElement = addMessageToUI('', 'assistant');
+                                showTypingIndicator(false);
+                            }
+                            
+                            updateMessageContent(messageElement, assistantMessage);
+                        }
+                        
+                        if (data.chat_id && !currentChatId) {
+                            currentChatId = data.chat_id;
+                            loadChatHistory(); // Refresh chat list
+                        }
+                        
+                        if (data.done) {
+                            eventSource.close();
+                            eventSource = null;
+                            loadChatHistory(); // Refresh chat list after completion
+                        }
+                    } catch (e) {
+                        console.error('Error parsing event data:', e);
+                    }
+                };
+                
+                eventSource.onerror = function() {
+                    showTypingIndicator(false);
+                    if (eventSource) {
+                        eventSource.close();
+                        eventSource = null;
+                    }
+                };
+            } catch (error) {
+                console.error('Error:', error);
+                addSystemMessage('Error sending message. Please try again.', 'error');
+                showTypingIndicator(false);
+            }
+        }
+
+        // Add a message to the UI
+        function addMessageToUI(content, role, editable = false) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message flex space-x-4 ${role === 'user' ? 'justify-end' : ''}`;
+
+            if (role === 'assistant') {
+                messageDiv.innerHTML = `
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="max-w-3xl bg-gray-700 rounded-lg p-4 shadow-sm">
+                        <div class="message-content prose prose-invert max-w-none">
+                            ${formatMarkdown(content)}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Escape user content!
+                messageDiv.innerHTML = `
+                    <div class="max-w-3xl bg-blue-600 text-white rounded-lg p-4 shadow-sm flex items-center">
+                        <div class="message-content flex-1" style="white-space:pre-wrap;">${escapeHTML(content)}</div>
+                        <button class="ml-2 text-xs px-2 py-1 bg-gray-700 rounded hover:bg-gray-600" onclick="editPrompt(this)">Edit</button>
+                    </div>
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white">
+                        ${document.getElementById('userAvatar').textContent}
+                    </div>
+                `;
+            }
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Highlight code blocks for assistant
+            if (role === 'assistant') {
+                setTimeout(() => {
+                    const codeBlocks = messageDiv.querySelectorAll('pre code');
+                    codeBlocks.forEach(block => {
+                        hljs.highlightElement(block);
+                    });
+                }, 100);
+            }
+
+            return messageDiv;
+        }
+
+        // Update message content progressively (for streaming)
+        function updateMessageContent(messageElement, content) {
+            const messageContent = messageElement.querySelector('.message-content');
+            messageContent.innerHTML = formatMarkdown(content);
+            
+            // Highlight any new code blocks
+            setTimeout(() => {
+                const codeBlocks = messageContent.querySelectorAll('pre code');
+                codeBlocks.forEach(block => {
+                    if (!block.classList.contains('hljs-highlighted')) {
+                        hljs.highlightElement(block);
+                        block.classList.add('hljs-highlighted');
+                    }
+                });
+            }, 100);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Add a system message
+        function addSystemMessage(content, type = 'info') {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex justify-center my-2';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = `px-3 py-2 rounded-md text-sm ${
+                type === 'error' ? 'bg-red-900 text-red-100' : 'bg-gray-700 text-gray-300'
+            }`;
+            messageContent.textContent = content;
+            
+            messageDiv.appendChild(messageContent);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Show/hide typing indicator and stop button
+        function showTypingIndicator(show) {
+            isTyping = show;
+            document.getElementById('typingIndicator').style.display = show ? 'block' : 'none';
+            document.getElementById('sendButton').disabled = show;
+            document.getElementById('stopButton').style.display = show ? 'inline-flex' : 'none';
+            if (show) {
+                document.getElementById('messagesContainer').scrollTop = 
+                    document.getElementById('messagesContainer').scrollHeight;
+            }
+        }
+
+        // Handle PDF upload
+        async function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                showTypingIndicator(true);
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                showTypingIndicator(false);
+                
+                if (result.success) {
+                    const pdfIndicator = document.getElementById('pdfIndicator');
+                    const pdfFilename = document.getElementById('pdfFilename');
+                    
+                    pdfIndicator.classList.remove('hidden');
+                    pdfFilename.textContent = result.filename;
+                    
+                    addSystemMessage(`PDF uploaded successfully: ${result.filename}`);
+                    
+                    // If we're in a chat, associate this PDF with the current chat
+                    if (currentChatId) {
+                        await fetch('/attach-pdf', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                chat_id: currentChatId, // must be set to the active chat
+                                file_id: result.file_id
+                            })
+                        });
+                    }
+                } else {
+                    addSystemMessage(`Error uploading PDF: ${result.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                showTypingIndicator(false);
+                addSystemMessage('Network error uploading PDF', 'error');
+                console.error('PDF upload error:', error);
+            }
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor(diff / (1000 * 60));
+            
+            if (days === 0) {
+                if (hours === 0) {
+                    if (minutes < 1) return 'Just now';
+                    return `${minutes} min ago`;
+                }
+                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            } else if (days === 1) {
+                return 'Yesterday';
+            } else if (days < 7) {
+                return `${days} day${days > 1 ? 's' : ''} ago`;
+            } else {
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+        }
+
+        // Format markdown content
+        function formatMarkdown(text) {
+            // Convert markdown to HTML
+            let html = marked.parse(text || '');
+            
+            // Add copy buttons to code blocks
+            html = html.replace(/<pre><code([^>]*)>([\s\S]*?)<\/code><\/pre>/g, 
+                '<div class="code-block-wrapper">' +
+                '<div class="code-block-header">' +
+                '<button onclick="copyCode(this)" class="copy-button">' +
+                '<i class="fas fa-copy"></i> Copy' +
+                '</button>' +
+                '</div>' +
+                '<pre><code$1>$2</code></pre>' +
+                '</div>');
+            
+            return html;
+        }
+
+        // Copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block-wrapper').querySelector('code');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/logout', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/';
+            }
+        }
+
+        // Reference to messages container for scrolling
+        const messagesContainer = document.getElementById('messagesContainer');
+
+        // Edit prompt functionality
+        window.editPrompt = function(button) {
+            const messageDiv = button.closest('.message');
+            const contentDiv = messageDiv.querySelector('.message-content');
+            const oldText = contentDiv.textContent;
+            contentDiv.innerHTML = `<textarea class="w-full bg-gray-800 text-white rounded p-2">${oldText}</textarea>
+                <button class="mt-2 px-2 py-1 bg-blue-600 rounded" onclick="resendPrompt(this)">Send</button>`;
+        };
+
+        window.resendPrompt = async function(button) {
+            const textarea = button.parentElement.querySelector('textarea');
+            const newText = textarea.value.trim();
+            if (!newText) return;
+            // Remove old assistant message if present
+            const nextMsg = button.closest('.message').nextElementSibling;
+            if (nextMsg && nextMsg.classList.contains('message') && nextMsg.querySelector('.fa-robot')) {
+                nextMsg.remove();
+            }
+            // Replace textarea with new message
+            button.parentElement.innerHTML = `<div class="message-content">${newText}</div>
+                <button class="ml-2 text-xs px-2 py-1 bg-gray-700 rounded hover:bg-gray-600" onclick="editPrompt(this)">Edit</button>`;
+            // Send new prompt
+            document.getElementById('messageInput').value = newText;
+            sendMessage();
+        };
+  
+        // Theme toggle logic
+        function setTheme(dark) {
+            const html = document.documentElement;
+            if (dark) {
+                html.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fas fa-moon text-gray-800 dark:text-gray-100';
+                document.getElementById('themeLabel').textContent = 'Dark';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.remove('dark');
+                document.getElementById('themeIcon').className = 'fas fa-sun text-yellow-500';
+                document.getElementById('themeLabel').textContent = 'Light';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // On load, set theme from localStorage or system preference
+        document.addEventListener('DOMContentLoaded', function() {
+            let dark = localStorage.getItem('theme') === 'dark';
+            if (localStorage.getItem('theme') === null) {
+                dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+            setTheme(dark);
+
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                setTheme(!document.documentElement.classList.contains('dark'));
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.heart-trail').forEach(trail => {
+                for (let i = 0; i < 20; i++) {
+                    createHeart(trail);
+                }
+            });
+            function createHeart(container) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤';
+                heart.classList.add('absolute', '-top-10');
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.fontSize = `${Math.random() * 20 + 10}px`;
+                heart.style.opacity = Math.random() * 0.5 + 0.1;
+                heart.style.animation = `fall ${Math.random() * 5 + 10}s linear infinite, float ${Math.random() * 3 + 3}s ease-in-out infinite`;
+                container.appendChild(heart);
+                setTimeout(() => {
+                    heart.remove();
+                    createHeart(container);
+                }, parseFloat(heart.style.animationDuration) * 1000);
+            }
+        });
+    </script>
+</body>
+</html>

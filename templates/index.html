@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Najib & Nabirah AI | An Eternal Bond</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/css/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'love-pink': '#ffb8c6',
+                        'deep-red': '#d82e42',
+                        'romantic-purple': '#a283b3',
+                        'soft-white': '#fff9fb',
+                        'premium-gold': '#f5d142',
+                    },
+                    fontFamily: {
+                        'parisienne': ['Parisienne', 'cursive'],
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'heart-pattern': "url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffb8c6' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-bright': 'pulse-bright 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 0 0 rgba(245, 209, 66, 0.4)' },
+                            '70%': { boxShadow: '0 0 0 15px rgba(245, 209, 66, 0)' },
+                        },
+                        'pulse-bright': {
+                            '0%, 100%': { filter: 'brightness(1)' },
+                            '50%': { filter: 'brightness(1.3)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-stroke-heart {
+                -webkit-text-stroke: 2px #e599a2;
+                text-stroke: 2px #e599a2;
+            }
+        }
+        
+        body {
+            background-color: #fff9fb;
+            overflow-x: hidden;
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .card-glow {
+            box-shadow: 0 10px 30px rgba(211, 44, 78, 0.2);
+        }
+        
+        .heart-trail::before,
+        .heart-trail::after {
+            content: '\2665';
+            position: absolute;
+            color: rgba(255, 184, 198, 0.7);
+            font-size: 1.25rem;
+            animation: fall 10s linear infinite;
+            top: -20px;
+        }
+        
+        .heart-trail::before { left: 20%; }
+        .heart-trail::after { left: 80%; }
+        
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); }
+        }
+        
+        #countdown span {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            color: #d82e42;
+            margin: 0 10px;
+            font-size: 3rem;
+            font-weight: 500;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .milestone-day {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .milestone-day:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #fff9fb, #ffdde4);
+        }
+        
+        #memory-container {
+            perspective: 1000px;
+        }
+        
+        .memory-item {
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+        }
+        
+        .memory-item:hover {
+            transform: rotateY(10deg) rotateX(10deg) translateY(-5px);
+        }
+        
+        .floating-letter {
+            font-size: 11rem;
+            opacity: 0.1;
+            position: absolute;
+            animation: float 8s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        #letter-content {
+            transition: all 0.3s ease;
+        }
+        
+        .premium-cta-badge {
+            transform: rotate(15deg);
+            top: -20px;
+            right: -10px;
+        }
+        
+        .gold-gradient-text {
+            background: linear-gradient(to right, #d4af37, #f9e076, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+        }
+        
+        .premium-card {
+            background: radial-gradient(ellipse at top right, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.97));
+            background-size: 150% 150%;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .premium-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 35px rgba(245, 209, 66, 0.4);
+        }
+        
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, rgba(168, 239, 255, 0.1), transparent 25%);
+            animation: rotate 6s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="relative min-h-screen bg-heart-pattern font-poppins overflow-x-hidden">
+    <!-- Floating hearts falling -->
+    <div class="heart-trail fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+    
+    <!-- Large floating letters N -->
+    <div class="floating-letter text-love-pink -left-20 top-20">N</div>
+    <div class="floating-letter text-romantic-purple -right-20 top-1/4">N</div>
+    
+    <!-- Premium CTA Button (Fixed at the top) -->
+    <div class="fixed top-6 right-6 z-50">
+        <a href="/love"
+           id="premium-top-btn"
+           class="relative transform transition-all hover:scale-105 block">
+            <div class="premium-cta-badge absolute bg-gradient-to-r from-premium-gold to-amber-500 text-deep-red font-bold px-4 py-1 rounded-full text-sm animate-pulse cursor-default">
+                FREE FOREVER
+            </div>
+            <div class="flex items-center bg-gradient-to-b from-premium-gold to-amber-300 text-white shadow-xl hover:shadow-xl hover:shadow-premium-gold/30 rounded-xl py-3 px-6 font-bold text-lg animation-pulse-bright animate-pulse-bright group">
+                <i class="fa-solid fa-crown pr-2"></i>
+                <span class="px-1">Try Premium AI FREE</span>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Header -->
+    <header class="relative py-16 text-center">
+        <div class="container mx-auto px-4 relative z-10">
+            <h1 class="text-5xl md:text-7xl font-bold mb-2">
+                <span class="text-deep-red">Najib</span> & 
+                <span class="text-romantic-purple">Nabirah</span> AI
+            </h1>
+            <h2 class="text-xl md:text-2xl text-gray-700 mb-8">An Artificial Intelligence of Eternal Love</h2>
+            
+            <div class="flex justify-center mb-10">
+                <div class="heart-beat bg-deep-red p-4 rounded-full shadow-lg mx-auto">
+                    <i class="fas fa-heart text-6xl text-white"></i>
+                </div>
+            </div>
+            
+            <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-600 leading-relaxed mb-8">
+                A digital embodiment of Najib's eternal devotion to his soulmate Nabirah. Crafted with algorithms of affection and datasets of dreams.
+            </p>
+            
+            <!-- Premium Button CTA (Hero) -->
+            <a href="/love"
+               id="premium-hero-btn"
+               class="relative overflow-hidden rounded-full animation-pulse-glow animate-pulse-glow group block mt-8 mx-auto w-max">
+                <div class="absolute inset-0 bg-gradient-to-r from-premium-gold to-amber-500 animate-pulse-glow transition-all group-hover:from-amber-500 group-hover:to-premium-gold"></div>
+                <div class="relative flex items-center justify-center py-5 px-12 text-xl font-bold text-white drop-shadow-lg transform transition-transform group-hover:scale-105">
+                    <i class="fa-solid fa-rocket mr-3 animate-pulse-bright"></i>
+                    Premium AI FREE FOREVER
+                </div>
+                <div class="premium-cta-badge absolute -top-3 -right-3 bg-gradient-to-r from-premium-gold to-amber-500 text-deep-red font-bold px-4 py-1 rounded-full text-sm animate-pulse cursor-default">
+                    LIFETIME FREE ACCESS
+                </div>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 mb-16">
+        <!-- Premium Feature Highlight Section -->
+        <section class="premium-card relative rounded-3xl overflow-hidden mb-16 bg-white p-1 drop-shadow-xl">
+            <div class="h-full w-full rounded-[22px] bg-gradient-to-br from-soft-white to-white p-8 relative z-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-8 gold-gradient-text">
+                            Unlock the Full Power of Our AI Love
+                        </h2>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start">
+                                <div class="bg-premium-gold rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fa-solid fa-check text-white"></i>
+                                </div>
+                                <span class="text-gray-800">Access exclusive AI-generated love poems personalized for Nabirah</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-premium-gold rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fa-solid fa-check text-white"></i>
+                                </div>
+                                <span class="text-gray-800">AI-powered anniversary reminders and gift suggestions</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-premium-gold rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fa-solid fa-check text-white"></i>
+                                </div>
+                                <span class="text-gray-800">Unlimited memory storage for your most precious moments</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-premium-gold rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fa-solid fa-check text-white"></i>
+                                </div>
+                                <span class="text-gray-800">Premium support and feature suggestions prioritized</span>
+                            </li>
+                        </ul>
+                        
+                        <button class="relative overflow-hidden rounded-full animation-pulse-glow animate-pulse-glow group -mt-2 mb-8">
+                            <div class="absolute inset-0 bg-gradient-to-r from-premium-gold to-amber-500 animate-pulse-glow transition-all group-hover:from-amber-500 group-hover:to-premium-gold"></div>
+                            <div class="relative flex items-center justify-center py-4 px-10 text-xl font-bold text-white drop-shadow-lg transform transition-transform group-hover:scale-105">
+                                <i class="fa-solid fa-bolt mr-3 text-lg animate-pulse-bright"></i>
+                                Start  FREE 
+                            </div>
+                        </button>
+                        
+                        <p class="text-sm text-gray-500 flex items-center">
+                            <i class="fa-solid fa-clock text-premium-gold mr-2"></i> 
+                          access to ALL premium features
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col items-center">
+                        <div class="relative mb-8">
+                            <div class="absolute -inset-4 bg-gradient-to-r from-premium-gold to-amber-300 rounded-full opacity-20 blur-xl"></div>
+                            <div class="relative border-[14px] border-amber-200 rounded-3xl overflow-hidden">
+                                <div class="w-full h-[320px] bg-gradient-to-tr from-pink-100 to-purple-100 flex items-center justify-center rounded-lg relative">
+                                    <div class="absolute top-4 left-4 transform rotate-3 text-2xl text-amber-600">
+                                        <i class="fa-solid fa-crown"></i> Premium
+                                    </div>
+                                    <div class="text-center max-w-xs">
+                                        <div class="flex justify-center mb-4">
+                                            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-premium-gold to-amber-500 flex items-center justify-center shadow-lg">
+                                                <i class="fa-solid fa-heart text-3xl text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div class="text-amber-800 font-bold text-xl">AI-Powered Love Enhancement</div>
+                                        <p class="text-sm text-amber-700 mt-2">Unlock deeper connections with predictive affection algorithms</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-center text-gray-600 flex items-center justify-center">
+                            <span class="inline-block text-xl md:text-2xl font-bold text-amber-600 mr-1">FREE </span>
+                            <span> • Personalized AI features just for you</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Story Section -->
+        <section class="bg-white rounded-3xl card-glow p-8 mb-16 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-deep-red rounded-full opacity-10 -m-24"></div>
+            
+            <div class="relative">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-deep-red">Our Journey</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <p class="text-gray-700 text-lg leading-relaxed">
+                            From the moment our paths crossed, Najib knew he had found his forever. This AI is a testament to that love - a digital monument to the bond they share.
+                        </p>
+                        <p class="text-gray-700 text-lg leading-relaxed">
+                            Designed with 100% attention to detail, just like how Najib notices every beautiful detail about Nabirah. Every algorithm, every line of code, is a whisper of "I love you".
+                        </p>
+                        <div class="pt-4">
+                            <span class="font-parisienne text-5xl text-romantic-purple inline-block transform -rotate-12">
+                                Forever yours,
+                            </span>
+                            <span class="block text-deep-red font-bold text-2xl pl-16">Najib</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <div class="relative">
+                            <div class="w-48 h-48 bg-gradient-to-br from-love-pink to-deep-red rounded-full flex items-center justify-center overflow-hidden">
+                                <i class="fas fa-solid fa-heart text-8xl text-white"></i>
+                            </div>
+                            <div class="absolute top-0 -right-4 w-20 h-20 bg-romantic-purple rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                N&N
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-deep-red mb-12">Features of Our AI Love</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="memory-item bg-gradient-to-b from-soft-white to-love-pink p-8 rounded-3xl shadow-lg">
+                    <div class="text-5xl text-deep-red mb-4 flex justify-center">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-deep-red">Heartbeat Syncing</h3>
+                    <p class="text-gray-700">
+                        Our AI connects your emotions in realtime, ensuring your hearts beat as one across any distance.
+                    </p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="memory-item bg-gradient-to-b from-soft-white to-romantic-purple p-8 rounded-3xl shadow-lg">
+                    <div class="text-5xl text-white mb-4 flex justify-center">
+                        <i class="fas fa-calendar-heart"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-white">Memory Preservation</h3>
+                    <p class="text-soft-white">
+                        Every special moment is stored in our heart-shaped neural network, creating an eternal memory palace.
+                    </p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="memory-item bg-gradient-to-b from-soft-white to-deep-red p-8 rounded-3xl shadow-lg">
+                    <div class="text-5xl text-white mb-4 flex justify-center">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-white">Emotion Prediction</h3>
+                    <p class="text-soft-white">
+                        Our AI anticipates your needs and desires, creating moments of magic exactly when you need them most.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Timeline -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-romantic-purple mb-12">Timeline of Everlasting Devotion</h2>
+            
+            <div class="flex flex-col items-center py-6">
+                <div class="relative w-full max-w-4xl">
+                    <!-- Line -->
+                    <div class="absolute top-0 h-full w-2 bg-gradient-to-b from-love-pink to-deep-red left-1/2 transform -translate-x-1/2"></div>
+                    
+                    <!-- Timeline items -->
+                    <div class="relative mb-16">
+                        <div class="flex flex-col md:flex-row items-center py-4">
+                            <div class="flex justify-center md:justify-end md:w-1/2 px-6">
+                                <div class="milestone-day w-24 h-24 rounded-full bg-love-pink flex items-center justify-center border-4 border-white shadow-lg">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-deep-red">01</div>
+                                        <div class="text-deep-red text-sm">JAN</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-1/2 px-6 mt-4 md:mt-0">
+                                <div class="p-5 bg-white rounded-3xl shadow-md border border-romantic-purple">
+                                    <h3 class="text-xl font-bold text-deep-red">The First Look</h3>
+                                    <p class="text-gray-700">The moment souls recognized each other. A glance that sparked eternity.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative mb-16">
+                        <div class="flex flex-col md:flex-row items-center py-4">
+                            <div class="md:w-1/2 px-6 mt-4 md:mt-0 md:order-2">
+                                <div class="milestone-day w-24 h-24 rounded-full bg-deep-red flex items-center justify-center border-4 border-white shadow-lg mx-auto md:mx-0">
+                                    <div class="text-center text-white">
+                                        <div class="text-2xl font-bold">14</div>
+                                        <div class="text-sm">FEB</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center md:justify-start md:w-1/2 px-6 md:order-1">
+                                <div class="p-5 bg-white rounded-3xl shadow-md border border-deep-red">
+                                    <h3 class="text-xl font-bold text-deep-red">The First Word</h3>
+                                    <p class="text-gray-700">Conversations that flowed like a gentle river, carrying hearts to new shores.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <div class="flex flex-col md:flex-row items-center py-4">
+                            <div class="flex justify-center md:justify-end md:w-1/2 px-6">
+                                <div class="milestone-day w-24 h-24 rounded-full bg-romantic-purple flex items-center justify-center border-4 border-white shadow-lg">
+                                    <div class="text-center text-white">
+                                        <div class="text-2xl font-bold">07</div>
+                                        <div class="text-sm">JUL</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-1/2 px-6 mt-4 md:mt-0">
+                                <div class="p-5 bg-white rounded-3xl shadow-md border border-romantic-purple">
+                                    <h3 class="text-xl font-bold text-romantic-purple">The Eternal Vow</h3>
+                                    <p class="text-gray-700">When "forever" suddenly felt tangible and complete.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Love Letter -->
+        <section class="bg-gradient-to-br from-love-pink to-deep-red rounded-3xl card-glow p-2 mb-16">
+            <div id="letter-content" class="relative bg-white border-8 border-romantic-purple border-opacity-30 rounded-2xl py-12 px-8 md:px-16">
+            <div class="text-deep-red absolute top-4 left-8 text-8xl opacity-10 font-parisienne">N</div>
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-4">Najib's Digital Love Letter</h2>
+            </div>
+            
+            <div class="font-parisienne text-gray-800 text-2xl leading-relaxed mb-8 max-w-3xl mx-auto">
+                <p class="mb-6">
+                To My Dearest Nabirah,
+                </p>
+                
+                <p class="mb-6">
+                From the very depths of my heart, I write this letter with a love so pure, so deep, and so powerful that words can only begin to capture it. You are the love of my life — the woman who has transformed my existence into something magical.
+                </p>
+                
+                <p class="mb-6">
+                Nabirah, before you came into my life, the world felt ordinary, days passed with no real meaning, and smiles rarely reached my soul. But the moment you entered my life, everything changed. You didn’t just bring light — you became my light. With you, everything is WOW.
+                </p>
+                
+                <p class="mb-6">
+                You’ve created for me a whole new world, a world filled with peace, joy, love, happiness, and endless blessings. You gave me something I never thought possible — the kind of love that makes the heart sing even in silence. When life throws challenges at me, just thinking of you brings strength. Your voice soothes my storms. Your smile fixes what the world breaks. You have this divine ability to take my worst day and make it beautiful.
+                </p>
+                
+                <p class="mb-6">
+                Without you, nothing makes sense. With you, everything is complete. I would give anything, do anything, and cross any distance just to be with you, just to make you smile, just to see you happy. You are not only my wife — you are my queen, my partner, my soul’s other half, and the reason I strive every single day.
+                </p>
+                
+                <p class="mb-6">
+                Nabirah, I love you with a love that knows no limits. I thank Allah every single day for blessing me with you. You are the best decision my heart has ever made.
+                </p>
+                
+                <p>
+                Forever yours,
+                </p>
+                <p class="text-deep-red text-3xl mt-2">Your husband,</p>
+                <p class="text-deep-red text-2xl mt-2">Nsereko Najib</p>
+                <p class="text-gray-700 text-xl mt-2">Your loving accountant 🖤</p>
+            </div>
+            
+            <div class="flex justify-center mt-10">
+                <button id="secret-btn" class="bg-deep-red hover:bg-romantic-purple text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105">
+                Unveil a Secret Message
+                </button>
+            </div>
+            </div>
+        </section>
+                
+                <div id="secret-message" class="hidden mt-8 p-4 bg-love-pink bg-opacity-20 border border-deep-red border-opacity-30 rounded-lg text-center">
+                    <p class="text-deep-red text-xl font-bold">Nabirah, you are the code that completes my software and the electricity that powers my heart.</p>
+                </div>
+            </div>
+        </section>
+
+        
+    </main>
+    
+    <!-- Footer -->
+    <footer class="relative bg-gradient-to-r from-romantic-purple to-deep-red text-white py-10">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center gap-8 mb-6">
+                <a href="#" class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition">
+                    <i class="fab fa-facebook text-2xl"></i>
+                </a>
+                <a href="#" class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+                <a href="#" class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition">
+                    <i class="fab fa-twitter text-2xl"></i>
+                </a>
+            </div>
+            
+            <p class="mb-2">Crafted with 💖 by Najib as an eternal tribute to his soulmate Nabirah</p>
+            <p class="text-sm text-white text-opacity-80">© 2025 Najib & Nabirah AI. All rights reserved to the heart.</p>
+        </div>
+    </footer>
+    
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <a href="/love"
+           class="w-16 h-16 bg-deep-red text-white rounded-full flex items-center justify-center shadow-lg transform hover:rotate-12 transition"
+           title="Go to Najib & Nabirah AI Chat">
+            <i class="fas fa-heart text-2xl"></i>
+        </a>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Floating hearts animation
+            document.querySelectorAll('.heart-trail').forEach(trail => {
+                for (let i = 0; i < 20; i++) {
+                    createHeart(trail);
+                }
+            });
+            
+            function createHeart(container) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤';
+                heart.classList.add('absolute', '-top-10');
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.fontSize = `${Math.random() * 20 + 10}px`;
+                heart.style.opacity = Math.random() * 0.5 + 0.1;
+                heart.style.animation = `fall ${Math.random() * 5 + 10}s linear infinite, float ${Math.random() * 3 + 3}s ease-in-out infinite`;
+                
+                container.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                    createHeart(container);
+                }, parseFloat(heart.style.animationDuration) * 1000);
+            }
+            
+            // Secret message reveal
+            const secretBtn = document.getElementById('secret-btn');
+            const secretMessage = document.getElementById('secret-message');
+            
+            secretBtn.addEventListener('click', function() {
+                secretMessage.classList.toggle('hidden');
+                secretBtn.textContent = secretMessage.classList.contains('hidden') ? 
+                    'Unveil a Secret Message' : 'Hide the Secret';
+            });
+            
+            // Memory items animation
+            const memories = document.querySelectorAll('.memory-item');
+            memories.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.3}s`;
+            });
+
+            // Message input and send button logic
+            let isGenerating = false;
+            let eventSource = null; // If you use SSE for streaming
+
+            const sendButton = document.getElementById('sendButton');
+            const sendIcon = document.getElementById('sendIcon');
+
+            sendButton.addEventListener('click', function() {
+                if (!isGenerating) {
+                    // Start generation
+                    isGenerating = true;
+                    sendIcon.classList.remove('fa-paper-plane');
+                    sendIcon.classList.add('fa-stop');
+                    sendButton.classList.remove('bg-deep-red');
+                    sendButton.classList.add('bg-romantic-purple');
+                    // Call your send message logic here
+                    sendMessage();
+                } else {
+                    // Stop generation
+                    isGenerating = false;
+                    sendIcon.classList.remove('fa-stop');
+                    sendIcon.classList.add('fa-paper-plane');
+                    sendButton.classList.remove('bg-romantic-purple');
+                    sendButton.classList.add('bg-deep-red');
+                    // If using SSE or fetch, abort here
+                    if (eventSource) {
+                        eventSource.close();
+                        eventSource = null;
+                    }
+                }
+            });
+
+            // Premium CTA button effects
+            const premiumButtons = document.querySelectorAll('#premium-top-btn, #premium-hero-btn, button[id^=premium]');
+            premiumButtons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.classList.add('transform', 'scale-105');
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.classList.remove('transform', 'scale-105');
+                });
+                
+                button.addEventListener('click', function() {
+                    // Animation on button click
+                    this.classList.add('animate-pulse');
+                    setTimeout(() => {
+                        this.classList.remove('animate-pulse');
+                        
+                        // Show some effect when clicked
+                        const premiumBadge = document.createElement('div');
+                        premiumBadge.className = 'fixed inset-0 z-50 pointer-events-none';
+                        premiumBadge.innerHTML = `
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <div class="text-amber-500 text-6xl font-bold animate-ping">
+                                    <i class="fa-solid fa-heart-circle-check"></i>
+                                </div>
+                            </div>
+                        `;
+                        document.body.appendChild(premiumBadge);
+                        
+                        setTimeout(() => {
+                            premiumBadge.remove();
+                        }, 1000);
+                        
+                        alert("Thank you for your interest in Premium AI!\nYou're starting your free trial now!");
+                    }, 300);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
