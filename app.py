@@ -26,7 +26,7 @@ app.secret_key = "hguwewjdjdjassyuwjhvagywehvcauucyjqhwqxvjzkgxcygqwehqwxbxsagcy
 # Configuration
 SUPABASE_URL = "https://wbpeabugoqfwziayrabr.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndicGVhYnVnb3Fmd3ppYXlyYWJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxMjg4MjUsImV4cCI6MjA2MjcwNDgyNX0.VBUvqPffjcmiMIxhHhoGHh0aaYwrfaO2iJrI-AHXiDs"
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
@@ -348,7 +348,7 @@ def chat():
                 headers={
                     "Authorization": f"Bearer {OPENROUTER_API_KEY}",
                     "Content-Type": "application/json",
-                    "HTTP-Referer": request.host_url,
+                    "HTTP-Referer": "https://najib-ai.onrender.com/",
                     "X-Title": "AI Chat Assistant"
                 },
                 json={
