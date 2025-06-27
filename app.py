@@ -57,10 +57,16 @@ def extract_pdf_text(filepath):
             reader = PyPDF2.PdfReader(f)
             text = []
             for page in reader.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text.append(page_text)
-            return "\n".join(text)
+                try:
+                    page_text = page.extract_text()
+                    if page_text:
+                        # Clean and encode the text properly
+                        cleaned_text = page_text.encode('ascii', 'ignore').decode('ascii')
+                        text.append(cleaned_text)
+                except Exception as e:
+                    print(f"Error extracting page: {str(e)}")
+                    continue
+            return "\n".join(text) if text else None
     except Exception as e:
         print(f"PDF Extraction Error: {str(e)}")
         return None
@@ -108,12 +114,22 @@ def save_message_async(user_id, content, role, chat_id=None):
     return future.result()  # This will block until done, but runs in separate thread
 
 def get_chat_history(user_id, chat_id=None, limit=50):
-    """Optimized chat history retrieval with pagination"""
+    """Get chat history with proper ordering"""
     try:
-        query = supabase.table('chat_history').select('*').eq('user_id', user_id)
+        query = supabase.table('chat_history') \
+            .select('*') \
+            .eq('user_id', user_id)
+        
         if chat_id:
             query = query.eq('chat_id', chat_id)
-        return query.order('created_at', desc=False).limit(limit).execute().data
+        
+        # Order by created_at ascending to maintain conversation flow
+        messages = query.order('created_at', desc=False) \
+            .limit(limit) \
+            .execute() \
+            .data
+
+        return messages
     except Exception as e:
         print(f"Error fetching chat history: {str(e)}")
         return []
@@ -205,6 +221,8 @@ def upload():
         return jsonify({'error': 'No file part'}), 400
     
     file = request.files['file']
+    chat_id = request.form.get('chat_id') or str(uuid.uuid4())
+    
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     
@@ -219,65 +237,42 @@ def upload():
         # Save file temporarily
         file.save(filepath)
         
-        # Extract text in background thread
-        def process_pdf():
-            try:
-                text = extract_pdf_text(filepath)
-                if text:
-                    # Store in Supabase storage
-                    supabase.storage.from_("pdfs").upload(
-                        f"{file_id}/{filename}", 
-                        open(filepath, 'rb').read(),
-                        {"content-type": "application/pdf"}
-                    )
-                    
-                    # Save metadata in database
-                    supabase.table('pdf_documents').insert({
-                        'user_id': session['user']['id'],
-                        'file_id': file_id,
-                        'filename': filename,
-                        'text_content': text[:10000],  # Store first 10k chars
-                        'uploaded_at': datetime.now(timezone.utc).isoformat()
-                    }).execute()
-                    
-                    # Cache in session
-                    session.setdefault('pdf_context', {})[file_id] = {
-                        'filename': filename,
-                        'text': text,
-                        'uploaded_at': datetime.now(timezone.utc).isoformat()
-                    }
-                    session.setdefault('pdf_files', {})[file_id] = {
-                        'file_id': file_id,
-                        'filename': filename,
-                        'text': text,
-                        'uploaded_at': datetime.now(timezone.utc).isoformat()
-                    }
-                    session.modified = True
-
-                    # After storing pdf_files[file_id]...
-                    # Optionally associate with latest chat if exists
-                    if 'current_chat_id' in session:
-                        pdf_context = session.setdefault('pdf_context', {})
-                        chat_pdfs = pdf_context.setdefault(session['current_chat_id'], [])
-                        if file_id not in chat_pdfs:
-                            chat_pdfs.append(file_id)
-                        session.modified = True
-            finally:
-                # Always remove temp file
-                try:
-                    os.remove(filepath)
-                except:
-                    pass
+        # Extract text with error handling
+        text = extract_pdf_text(filepath)
+        if not text:
+            return jsonify({'error': 'Could not extract text from PDF'}), 400
+            
+        # Store in database
+        supabase.table('pdf_documents').insert({
+            'user_id': session['user']['id'],
+            'file_id': file_id,
+            'chat_id': chat_id,
+            'filename': filename,
+            'text_content': text,
+            'uploaded_at': datetime.now(timezone.utc).isoformat()
+        }).execute()
         
-        executor.submit(process_pdf)
-        
+        # Add system message about PDF
+        save_message_async(
+            session['user']['id'],
+            f"📄 PDF uploaded: {filename}",
+            'system',
+            chat_id
+        )
+            
         return jsonify({
             'success': True,
             'file_id': file_id,
-            'filename': filename
+            'filename': filename,
+            'chat_id': chat_id
         })
+            
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Upload error: {str(e)}")
+        return jsonify({'error': 'Error processing PDF'}), 500
+    finally:
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
 @app.route('/chats')
 @login_required
@@ -323,24 +318,59 @@ def chat():
     if not message:
         return jsonify({'error': 'Message cannot be empty'}), 400
 
+    # Save user message
     save_message_async(session['user']['id'], message, 'user', chat_id)
 
-    # Prepare context from associated PDFs
-    context_parts = []
-    pdf_files = session.get('pdf_files', {})
-    pdf_context = session.get('pdf_context', {})
-    file_ids = pdf_context.get(chat_id, [])
-    for file_id in file_ids:
-        doc = pdf_files.get(file_id)
-        if doc:
-            context_parts.append(f"=== {doc['filename']} ===\n{doc['text'][:5000]}\n")
-    context = "\n".join(context_parts) if context_parts else None
+    # Get PDF context for this chat
+    context = ""
+    try:
+        # Query the database for PDFs associated with this chat
+        pdf_docs = supabase.table('pdf_documents') \
+            .select('*') \
+            .eq('user_id', session['user']['id']) \
+            .eq('chat_id', chat_id) \
+            .execute()
+        
+        if pdf_docs.data:
+            context = "Here is the content from the uploaded documents:\n\n"
+            for doc in pdf_docs.data:
+                context += f"=== Content from {doc['filename']} ===\n"
+                context += f"{doc['text_content']}\n\n"
+            context += "\nPlease analyze the above content and answer the following question:\n"
+    except Exception as e:
+        print(f"Error fetching PDF context: {str(e)}")
 
     def generate_response():
-        messages = []
+        messages = [
+            {
+                "role": "system",
+                "content": "You are Najib & Nabirah AI, a helpful assistant. Always maintain a professional yet warm tone."
+            }
+        ]
+        
+        # Get previous messages for context (last 10 messages)
+        try:
+            previous_messages = get_chat_history(session['user']['id'], chat_id, limit=10)
+            for msg in previous_messages:
+                messages.append({
+                    "role": msg['role'],
+                    "content": msg['message']
+                })
+        except Exception as e:
+            print(f"Error fetching chat history: {str(e)}")
+        
+        # Add PDF context if available
         if context:
-            messages.append({"role": "system", "content": f"Document context:\n{context}"})
-        messages.append({"role": "user", "content": message})
+            messages.append({
+                "role": "system",
+                "content": context
+            })
+
+        # Add the current user message
+        messages.append({
+            "role": "user",
+            "content": message
+        })
 
         try:
             with requests.post(
@@ -348,13 +378,14 @@ def chat():
                 headers={
                     "Authorization": f"Bearer {OPENROUTER_API_KEY}",
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://najib-ai.onrender.com/",
+                    "HTTP-Referer": request.host_url,
                     "X-Title": "AI Chat Assistant"
                 },
                 json={
                     "model": "deepseek/deepseek-r1-0528-qwen3-8b:free",
                     "messages": messages,
-                    "stream": True
+                    "stream": True,
+                    "temperature": 0.7  # Add temperature for better context handling
                 },
                 stream=True
             ) as response:

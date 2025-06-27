@@ -180,8 +180,9 @@
     
     /* Chat history becomes scrollable on mobile */
     #chatHistory {
-        max-height: 200px;
+        max-height: 180px;
         overflow-y: auto;
+        padding-bottom: 0.5rem;
     }
     
     /* Adjust avatar size */
@@ -208,7 +209,40 @@
     
     /* Allow chat items to wrap on mobile */
     .chat-item {
+        flex-direction: row !important;
+        align-items: center !important;
+        padding: 0.5rem 0.5rem !important;
+        font-size: 0.95rem !important;
+        border-radius: 0.75rem !important;
+        margin-bottom: 0.25rem !important;
+        background: #fff0f6 !important;
+        box-shadow: 0 1px 4px rgba(211,44,78,0.04);
+    }
+    
+    .chat-item .flex {
         flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100%;
+    }
+    
+    .chat-item .text-sm {
+        font-size: 0.95rem !important;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .chat-item .text-xs {
+        font-size: 0.8rem !important;
+    }
+    
+    .chat-item .ml-2 {
+        margin-left: 0.5rem !important;
+    }
+    
+    .chat-item .fa-trash {
+        font-size: 1.1rem !important;
     }
     
     /* Make logo smaller on mobile */
@@ -251,9 +285,139 @@
         display: none !important;
     }
 }
+
+/* Add this to your <style> section */
+.chat-history-mobile {
+    @media (max-width: 768px) {
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 184, 198, 0.1);
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(211,44,78,0.05);
+            
+            .chat-title {
+                font-size: 0.9rem;
+                font-weight: 500;
+                max-width: 160px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .chat-time {
+                font-size: 0.75rem;
+                opacity: 0.7;
+            }
+            
+            .delete-btn {
+                padding: 0.5rem;
+                margin-left: auto;
+                font-size: 1rem;
+                opacity: 0.7;
+                transition: all 0.2s;
+                
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+
+/* Add these styles to your <style> section */
+@media (max-width: 768px) {
+    .message {
+        margin: 0.5rem 0;
+        
+        /* User messages */
+        &.justify-end {
+            .max-w-3xl {
+                max-width: 85%;
+                margin-left: auto;
+            }
+        }
+        
+        /* Assistant messages */
+        &:not(.justify-end) {
+            .max-w-3xl {
+                max-width: 85%;
+            }
+        }
+        
+        /* Avatar sizes */
+        .w-10 {
+            width: 2rem;
+            height: 2rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Message padding */
+        .p-4 {
+            padding: 0.75rem;
+        }
+        
+        /* Code blocks */
+        .code-block-wrapper {
+            margin: 0.5rem 0;
+            font-size: 0.875rem;
+            
+            pre {
+                max-width: 100%;
+                overflow-x: auto;
+            }
+        }
+    }
+}
+
+/* Add these to your existing styles */
+@media (max-width: 768px) {
+    /* Improved header */
+    .border-b.border-gray-700 {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Better touch targets */
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Improved scrolling */
+    .overflow-y-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Better spacing */
+    .space-x-4 {
+        gap: 0.75rem;
+    }
+}
    
         
     </style>
+    <!-- Add this in the <head> section, after other scripts -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Add MathJax configuration before the closing </head> tag -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
 </head>
 <body class="bg-gray-900 text-gray-100 flex h-screen overflow-hidden">
     <!-- Mobile sidebar toggle -->
@@ -262,8 +426,8 @@
     </button>
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar bg-gray-800 w-64 flex-shrink-0 flex flex-col border-r border-gray-700">
+    <!-- Sidebar (responsive overlay) -->
+    <div id="sidebar" class="sidebar fixed md:static z-40 inset-y-0 left-0 w-4/5 max-w-xs md:w-64 bg-gray-800 flex-shrink-0 flex flex-col border-r border-gray-700 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
         <div class="p-4 border-b border-gray-700">
             <div class="flex items-center space-x-3">
                 <i class="fas fa-brain text-blue-400 text-2xl"></i>
@@ -300,13 +464,14 @@
             </button>
         </div>
     </div>
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-black bg-opacity-40 z-30 hidden md:hidden"></div>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
         <!-- Chat header -->
-        <div class="border-b border-gray-700 px-4 sm:px-6 py-3 sm:py-4 bg-gray-800 flex items-center justify-between">
+        <div class="border-b border-gray-700 px-2 sm:px-6 py-2 sm:py-4 bg-gray-800 flex items-center justify-between">
             <h2 id="chatTitle" class="text-base sm:text-lg font-medium truncate">New Chat</h2>
-            <div class="flex items-center space-x-2 sm:space-x-4">
+            <div class="flex items-center space-x-1 sm:space-x-4">
                 <button id="themeToggle"
                     class="px-2 sm:px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center space-x-2 text-sm focus:outline-none transition-colors duration-200"
                     title="Toggle light/dark mode"
@@ -332,31 +497,14 @@
         </div>
         
         <!-- Messages container -->
-        <div id="messagesContainer" class="flex-1 overflow-y-auto p-2 sm:p-6 space-y-4 sm:space-y-6">
-            <!-- Welcome message -->
-            <div class="message flex space-x-4">
-                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="max-w-3xl bg-gray-700 rounded-lg p-4 shadow-sm">
-                    <div class="prose prose-invert max-w-none">
-                        <h3>Welcome to Najib & Nabirah AI Chat! 🚀</h3>
-                        <p>I'm your advanced AI assistant, ready to help you with:</p>
-                        <ul>
-                            <li>💻 Code generation and debugging</li>
-                            <li>📄 PDF document analysis</li>
-                            <li>🤔 Complex problem solving</li>
-                            <li>✍️ Content creation and editing</li>
-                            <li>🧠 Research and explanations</li>
-                        </ul>
-                        <p>Upload a PDF document or start asking questions. I'm here to help!</p>
-                    </div>
-                </div>
+        <div id="messagesContainer" class="flex-1 min-h-0 overflow-y-auto p-2 sm:p-6 space-y-3 sm:space-y-6">
+            <div class="max-w-screen-lg mx-auto"> <!-- Added wrapper for better mobile layout -->
+                <!-- Messages will be injected here -->
             </div>
         </div>
 
         <!-- Typing indicator -->
-        <div id="typingIndicator" class="hidden px-4 sm:px-6 py-2 sm:py-3 bg-gray-800 border-t border-gray-700">
+        <div id="typingIndicator" class="hidden px-2 sm:px-6 py-2 bg-gray-800 border-t border-gray-700">
             <div class="flex items-center space-x-3 text-gray-400">
                 <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-700 flex items-center justify-center">
                     <i class="fas fa-robot"></i>
@@ -371,22 +519,26 @@
         </div>
 
         <!-- Input container -->
-        <div class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-800 border-t border-gray-700 flex items-center gap-2">
-            <div class="relative flex-1">
-                <textarea 
-                    id="messageInput" 
-                    class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm sm:text-base"
-                    placeholder="Type your message here... (Shift + Enter for new line)"
-                    rows="1"
-                ></textarea>
-                <button id="sendButton" class="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 w-9 sm:w-10 h-9 sm:h-10 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center">
-                    <i class="fas fa-paper-plane"></i>
+        <div class="px-2 sm:px-6 py-2 sm:py-4 bg-gray-800 border-t border-gray-700 sticky bottom-0">
+            <div class="max-w-screen-lg mx-auto flex items-end gap-2">
+                <div class="relative flex-1">
+                    <textarea 
+                        id="messageInput" 
+                        class="w-full px-3 py-2 sm:px-4 sm:py-3 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm sm:text-base"
+                        placeholder="Message Najib & Nabirah AI..."
+                        rows="1"
+                        style="min-height:44px;max-height:120px;"
+                    ></textarea>
+                    <button id="sendButton" 
+                        class="absolute right-2 bottom-2 w-10 h-10 bg-deep-red hover:bg-romantic-purple rounded-full flex items-center justify-center transition-colors">
+                        <i class="fas fa-paper-plane text-lg"></i>
+                    </button>
+                </div>
+                <button id="stopButton" 
+                    class="px-3 py-2 bg-deep-red text-white rounded-lg shadow-md font-semibold hidden">
+                    <i class="fas fa-stop"></i>
                 </button>
             </div>
-            <button id="stopButton" class="px-4 py-2 bg-deep-red text-white rounded-lg shadow-md font-semibold hidden" style="min-width:70px;">
-                <i class="fas fa-stop"></i>
-                <span class="hidden sm:inline ml-1">Stop</span>
-            </button>
         </div>
     </div>
 
@@ -420,17 +572,16 @@
 
         // Set up all event listeners
         function setupEventListeners() {
-            // Sidebar toggle
+            // Sidebar toggle for mobile
             document.getElementById('sidebarToggle').addEventListener('click', function() {
                 const sidebar = document.getElementById('sidebar');
-                sidebar.classList.toggle('sidebar-open');
-                document.getElementById('sidebarBackdrop').style.display = sidebar.classList.contains('sidebar-open') ? 'block' : 'none';
+                const backdrop = document.getElementById('sidebarBackdrop');
+                sidebar.classList.toggle('-translate-x-full');
+                backdrop.classList.toggle('hidden');
             });
-
-            // Sidebar backdrop click
             document.getElementById('sidebarBackdrop').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.remove('sidebar-open');
-                this.style.display = 'none';
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+                this.classList.add('hidden');
             });
 
             // New chat button
@@ -501,12 +652,18 @@
                     
                     data.chats.forEach(chat => {
                         const chatItem = document.createElement('div');
-                        chatItem.className = 'chat-item px-3 py-2 rounded-md cursor-pointer';
+                        chatItem.className = 'chat-item px-3 py-2 rounded-md cursor-pointer hover:bg-pink-100 transition flex items-center';
                         chatItem.dataset.chatId = chat.id;
                         
+                        // Truncate title for mobile
+                        let title = chat.title;
+                        if (window.innerWidth < 768 && title.length > 18) {
+                            title = title.substring(0, 16) + '...';
+                        }
+                        
                         chatItem.innerHTML = `
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm truncate">${chat.title}</span>
+                            <div class="flex justify-between items-center w-full">
+                                <span class="text-sm truncate">${title}</span>
                                 <span class="text-xs text-gray-400">${formatDate(chat.created_at)}</span>
                             </div>
                         `;
@@ -848,6 +1005,9 @@
             
             const formData = new FormData();
             formData.append('file', file);
+            if (currentChatId) {
+                formData.append('chat_id', currentChatId);
+            }
             
             try {
                 showTypingIndicator(true);
@@ -866,19 +1026,7 @@
                     pdfIndicator.classList.remove('hidden');
                     pdfFilename.textContent = result.filename;
                     
-                    addSystemMessage(`PDF uploaded successfully: ${result.filename}`);
-                    
-                    // If we're in a chat, associate this PDF with the current chat
-                    if (currentChatId) {
-                        await fetch('/attach-pdf', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                chat_id: currentChatId, // must be set to the active chat
-                                file_id: result.file_id
-                            })
-                        });
-                    }
+                    addSystemMessage(`📄 PDF uploaded successfully: ${result.filename}`);
                 } else {
                     addSystemMessage(`Error uploading PDF: ${result.error || 'Unknown error'}`, 'error');
                 }
